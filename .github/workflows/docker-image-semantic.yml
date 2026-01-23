@@ -44,8 +44,8 @@ jobs:
       uses: docker/metadata-action@v5
       with:
         images: |
-          opencsghq/csghub-portal
-          ${{ secrets.ACR_REGISTRY }}/opencsghq/csghub-portal
+          jianjungki/csghub-portal
+          ${{ secrets.ACR_REGISTRY }}/jianjungki/csghub-portal
         tags: |
           type=ref,event=tag
         flavor: |

@@ -137,6 +137,9 @@ func createRender() multitemplate.Renderer {
 		"codes_index":                    "codes/index.html",
 		"codes_show":                     "codes/show.html",
 		"codes_new":                      "codes/new.html",
+		"skills_index":                   "skills/index.html",
+		"skills_show":                    "skills/show.html",
+		"skills_new":                     "skills/new.html",
 		"spaces_index":                   "spaces/index.html",
 		"spaces_show":                    "spaces/show.html",
 		"spaces_new":                     "spaces/new.html",
@@ -162,6 +165,7 @@ func createRender() multitemplate.Renderer {
 		"profile_likes":                  "profile/likes.html",
 		"settings_profile":               "settings/profile.html",
 		"settings_access_token":          "settings/access_token.html",
+		"settings_api_keys":              "settings/api_keys.html",
 		"settings_starship_access_token": "settings/starship_access_token.html",
 		"settings_sync_access_token":     "settings/sync_access_token.html",
 		"settings_ssh_keys":              "settings/ssh_keys.html",
@@ -248,6 +252,7 @@ func setupViewsRouter(engine *gin.Engine, handlersRegistry *HandlersRegistry) {
 	registerModelRoutes(engine, handlersRegistry)
 	registerDatasetRoutes(engine, handlersRegistry)
 	registerCodeRoutes(engine, handlersRegistry)
+	registerSkillRoutes(engine, handlersRegistry)
 	registerSpaceRoutes(engine, handlersRegistry)
 	registerEndpointRoutes(engine, handlersRegistry)
 	registerNotebookRoutes(engine, handlersRegistry)

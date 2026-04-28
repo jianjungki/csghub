@@ -246,6 +246,16 @@
               </a>
               <a
                 v-if="!actionLimited"
+                href="/skills/new">
+                <el-dropdown-item>
+                  <div class="flex items-center w-fit gap-2">
+                    <SvgIcon name="navbar-new" />
+                    {{ $t('navbar.newSkill') }}
+                  </div>
+                </el-dropdown-item>
+              </a>
+              <a
+                v-if="!actionLimited"
                 href="/collections/new">
                 <el-dropdown-item>
                   <div class="flex items-center w-fit gap-2">
@@ -303,7 +313,7 @@
                 </el-dropdown-item>
               </a>
               <a
-                v-if="isAdmin && !!version"
+                v-if="!!version"
                 :href="releaseHistoryUrl"
                 target="_blank">
                 <el-dropdown-item>
@@ -1586,8 +1596,6 @@
         window.location.href = '/'
       },
       async fetchVersion() {
-        if (!this.isAdmin) return
-
         const { data } = await useFetchApi('/version').json()
         if (data.value) {
           this.version = data.value.data?.version

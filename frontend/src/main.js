@@ -31,6 +31,7 @@ import ProfileEdit from "./components/user_settings/ProfileEdit.vue"
 import ProfileSettings from "./components/user_settings/ProfileSettings.vue"
 import NewOrganization from "./components/organizations/NewOrganization.vue"
 import AccessTokenSettings from "./components/user_settings/AccessTokenSettings.vue"
+import PersonalApiKeys from "./components/user_settings/PersonalApiKeys.vue"
 import SshKeySettings from "./components/user_settings/SshKeySettings.vue"
 import NewModel from "./components/models/NewModel.vue"
 import TagSidebar from "./components/tags/TagSidebar.vue"
@@ -42,6 +43,7 @@ import NewApplicationSpace from "./components/application_spaces/NewApplicationS
 import ProfileRepoList from "./components/shared/ProfileRepoList.vue"
 import RepoCards from "./components/shared/RepoCards.vue"
 import NewCode from "./components/codes/NewCode.vue"
+import NewSkill from "./components/skills/NewSkill.vue"
 import SvgIcon from "./components/shared/SvgIcon.vue"
 import CsgButton from "./components/shared/CsgButton.vue"
 import NewCollection from "./components/collections/NewCollection.vue"
@@ -122,6 +124,7 @@ const app = createApp({
     ProfileEdit,
     ProfileSettings,
     AccessTokenSettings,
+    PersonalApiKeys,
     SshKeySettings,
     NewOrganization,
     NewModel,
@@ -134,6 +137,7 @@ const app = createApp({
     OrganizationSettings,
     RepoCards,
     NewCode,
+    NewSkill,
     NewCollection,
     NewEndpoint,
     NewFinetune,
@@ -258,8 +262,17 @@ const routes = [
       repoName: route.params.name
     })
   },
-  { 
-    path: '/spaces/:namespace/:name', 
+  {
+    path: '/skills/:namespace/:name',
+    component: RepoDetail,
+    props: (route) => ({
+      repoType: 'skill',
+      namespace: route.params.namespace,
+      repoName: route.params.name
+    })
+  },
+  {
+    path: '/spaces/:namespace/:name',
     component: RepoDetail,
     props: (route) => ({ 
       repoType: 'space',

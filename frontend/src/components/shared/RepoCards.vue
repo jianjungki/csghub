@@ -2,7 +2,7 @@
   <div
     class="flex gap-6 page-responsive-width m-auto min-h-[calc(100vh-153px)] md:min-h-0 md:px-5">
     <div
-      v-if="repoType !== 'space'"
+      v-if="repoType !== 'space' && repoType !== 'agent'"
       class="w-[30%] min-w-[360px] border-r border-gray-200 pr-6 md:hidden">
       <TagSidebar
         :selectedTag="selectedTag"
@@ -30,6 +30,11 @@
             <SvgIcon
               v-if="repoType === 'code'"
               name="codes"
+              width="18"
+              height="18" />
+            <SvgIcon
+              v-if="repoType === 'skill'"
+              name="skills"
               width="18"
               height="18" />
             <SvgIcon
@@ -78,6 +83,21 @@
           </el-select>
           <el-select
             v-if="repoType === 'space'"
+            v-model="spaceStatus"
+            :placeholder="$t('application_spaces.statusPlaceholder')"
+            @change="filterChange"
+            style="width: 150px"
+            size="large"
+          >
+            <el-option
+              v-for="item in statusOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+          <el-select
+            v-if="repoType === 'space'"
             :placeholder="$t('spaces.sdkPlaceholder')"
             v-model="searchSdk"
             @change="filterChange"
@@ -118,6 +138,7 @@
       </div>
       <div
         v-if="repoType === 'space'"
+        v-loading="loadingRequest"
         class="grid grid-cols-4 2xl:grid-cols-3 xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-1 gap-4 mb-4 mt-4 xl:pl-5 md:pl-0">
         <application-space-item
           v-for="repo in reposData"
@@ -186,12 +207,13 @@
       sort: searchParams.get('sort') ?? 'trending',
       filter: searchParams.get('filter') ?? 'all',
       source: searchParams.get('source') ?? 'all',
-      sdk: searchParams.get('sdk') ?? ''
+      sdk: searchParams.get('sdk') ?? '',
+      status: searchParams.get('status') ?? ''
     }
     
     params.categoryTags = {}
     
-    const standardParams = ['tag', 'tag_type', 'page', 'search', 'sort', 'filter', 'source', 'sdk', 'tag_category', 'tag_name', 'tag_group', 'list_serverless']
+    const standardParams = ['tag', 'tag_type', 'page', 'search', 'sort', 'filter', 'source', 'sdk', 'status', 'tag_category', 'tag_name', 'tag_group', 'list_serverless']
     
     for (const [key, value] of searchParams.entries()) {
       if (!standardParams.includes(key) && value) {
@@ -214,6 +236,9 @@
     
     if (props.repoType === 'space') {
       params.set('sdk', searchSdk.value)
+    }
+    if (props.repoType === 'space') {
+      params.set('status', spaceStatus.value)
     }
     
     params.delete('tag_category')
@@ -250,6 +275,7 @@
     filterSelection.value = params.filter
     sourceSelection.value = params.source
     searchSdk.value = params.sdk
+    spaceStatus.value = params.status
 
     const url = new URL(window.location.href)
     const sp = url.searchParams
@@ -301,6 +327,7 @@
   const currentPage = ref(1)
   const totalRepos = ref(0)
   const searchSdk = ref('')
+  const spaceStatus = ref('')
   const selectedTag = ref('')
   const selectedTagType = ref('')
   
@@ -314,6 +341,18 @@
   }
 
   const reposData = ref([])
+  const statusOptions = [
+    { value: '', label: t('all.all') },
+    { value: 'Building', label: t('application_spaces.status.building') },
+    { value: 'BuildingFailed', label: t('application_spaces.status.buildingFailed') },
+    { value: 'Deploying', label: t('application_spaces.status.deploying') },
+    { value: 'DeployFailed', label: t('application_spaces.status.deployFailed') },
+    { value: 'Running', label: t('application_spaces.status.running')  },
+    { value: 'RuntimeError', label: t('application_spaces.status.runtimeError') },
+    { value: 'Stopped', label: t('application_spaces.status.stopped') },
+    { value: 'Sleeping', label: t('application_spaces.status.sleeping') },
+    { value: 'NoAppFile', label: t('application_spaces.status.noAppfile') },
+  ]
   const sortOptions = [
     {
       value: 'trending',
@@ -441,6 +480,7 @@
     newParams.set('source', sourceSelection.value)
     if (props.repoType === 'space') {
       newParams.set('sdk', searchSdk.value)
+      newParams.set('status', spaceStatus.value)
     }
     
     if (currentUrl.toString() !== newUrl.toString()) {
@@ -477,6 +517,9 @@
     url = url + `&sort=${sortSelection.value}`
     if(props.repoType === 'space'){
       url+= `&sdk=${searchSdk.value}`;
+    }
+    if (props.repoType === 'space' && spaceStatus.value) {
+      url += `&status=${spaceStatus.value}`
     }
 
     if (filterSelection.value === 'inference') {

@@ -77,10 +77,13 @@
   const isDataLoading = ref(false)
   
   const showNewTag = computed(() => {
-    return ((props.repoType === 'model' || props.repoType === 'dataset')) && (isWithinTwoWeeks(repoDetailStore.createdAt) || isWithinTwoWeeks(repoDetailStore.updatedAt));
+    return ((props.repoType === 'model' || props.repoType === 'dataset' || props.repoType === 'skill')) && (isWithinTwoWeeks(repoDetailStore.createdAt) || isWithinTwoWeeks(repoDetailStore.updatedAt));
   });
 
   const tags = computed(() => {
+    if (!isInitialized.value) {
+      return {}
+    }
     return handleRepoTags(repoDetailStore)
   })
 
@@ -132,11 +135,13 @@
       const repoData = data.value.data
       repoDetailStore.initialize(repoData, props.repoType)
 
-      const urlParams = getUrlParams();
-      setRepoTab({
-        currentBranch: urlParams.branch || props.currentBranch || repoDetailStore.defaultBranch,
-        lastPath: normalizePath(urlParams.path || '')
-      });
+      if (!isUpdate) {
+        const urlParams = getUrlParams();
+        setRepoTab({
+          currentBranch: urlParams.branch || props.currentBranch || repoDetailStore.defaultBranch,
+          lastPath: normalizePath(urlParams.path || '')
+        });
+      }
       return true
     } catch (error) {
       console.error('Failed to fetch repo detail:', error)
